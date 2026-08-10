@@ -1,0 +1,24 @@
+# Local development profile. Safe, convenience defaults so `mvn spring-boot:run`
+# works out of the box against the docker-compose Postgres instance
+# (see docker-compose.yml) with zero required environment variables.
+# NEVER reuse these defaults in a real deployment - prod requires everything
+# explicitly (see application-prod.yml, which has no fallback values at all).
+
+spring:
+  datasource:
+    username: ${DB_USERNAME:taskflow_user}
+    password: ${DB_PASSWORD:taskflow_pass}
+
+  jpa:
+    show-sql: true
+
+taskflow:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:dev-only-secret-key-never-use-this-in-production-min-256-bits}
+
+logging:
+  level:
+    com.taskflow.api: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: INFO

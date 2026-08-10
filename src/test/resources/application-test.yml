@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:taskflow_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  flyway:
+    enabled: false
+
+taskflow:
+  security:
+    jwt:
+      secret: test-only-secret-key-not-for-production-use-1234567890
+      expiration-ms: 3600000
+  scheduler:
+    reminder-cron: "0 0 0 1 1 ?"   # effectively disabled during tests (runs once a year)

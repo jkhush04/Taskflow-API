@@ -1,0 +1,28 @@
+# Production profile. Deliberately has NO fallback defaults for credentials
+# or the JWT secret: if DB_USERNAME, DB_PASSWORD, or JWT_SECRET aren't set
+# in the environment, Spring fails fast at startup instead of silently
+# booting with a guessable dev secret.
+
+spring:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: false
+
+taskflow:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+
+logging:
+  level:
+    com.taskflow.api: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.security: WARN
+
+management:
+  endpoint:
+    health:
+      show-details: never

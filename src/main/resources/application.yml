@@ -1,0 +1,53 @@
+# Shared, profile-independent configuration. Profile-specific overrides
+# (credentials fallback behavior, logging, SQL echoing) live in
+# application-dev.yml / application-prod.yml. Activate with
+# SPRING_PROFILES_ACTIVE=dev|prod (defaults to "dev" for local convenience).
+spring:
+  application:
+    name: taskflow-api
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:taskflow}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # Schema is owned by Flyway migrations, never by Hibernate.
+      # "validate" makes Hibernate fail fast if entities and the real
+      # schema ever drift, instead of silently auto-altering tables.
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+
+taskflow:
+  security:
+    jwt:
+      expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  scheduler:
+    reminder-cron: ${REMINDER_CRON:0 0 * * * *}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never

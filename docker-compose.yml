@@ -1,0 +1,25 @@
+# Local Postgres for TaskFlow API development.
+# Matches application-dev.yml's defaults exactly (taskflow_user/taskflow_pass,
+# db "taskflow", port 5432) so `docker compose up -d` + `mvn spring-boot:run`
+# just works with zero extra configuration.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: taskflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: taskflow
+      POSTGRES_USER: taskflow_user
+      POSTGRES_PASSWORD: taskflow_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - taskflow_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow_user -d taskflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  taskflow_pgdata:
